@@ -70,7 +70,7 @@ app.post('/api/todos', function(req, res) {
 	Todo.create({
 		text: req.body.text,
 		done: false
-	}, function(error, todos) {
+	}, function(error, todo) {
 		if (error) {
 			res.send(error);
 		}
@@ -79,9 +79,8 @@ app.post('/api/todos', function(req, res) {
 			if (error) {
 				res.send(errors);
 			}
-		})
-
-		res.json(todos);
+			res.json(todos);
+		});
 	});
 
 });
