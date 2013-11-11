@@ -3,13 +3,12 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
+
+var indexController = require('./routes/IndexController');
+var todosController = require('./routes/TodosController');
+
 var http = require('http');
 var path = require('path');
-var mongoose = require('mongoose');
-
-mongoose.connect('mongodb://localhost/todolist');
-
 var app = express();
 
 // all environments
@@ -26,6 +25,7 @@ app.use(app.router);
 app.use(require('less-middleware')({
 	src: path.join(__dirname, 'public')
 }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
@@ -33,70 +33,13 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
+
+app.get('/', indexController.index);
+app.get('/api/todos', todosController.allTodos);
+app.post('/api/todos', todosController.createTodo);
+app.delete('/api/todos/:todo_id', todosController.deleteTodo);
+
+
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
-});
-
-
-app.get('/', routes.index);
-
-var Todo = mongoose.model('Todo', {
-	text: String,
-	date: {
-		type: Date,
-		default: Date.now
-	},
-	done: {
-		type: Boolean,
-		default: false
-	}
-});
-
-app.get('/api/todos', function(req, res) {
-
-	Todo.find(function(error, todos) {
-		if (error) {
-			res.send(error);
-		}
-
-		res.json(todos);
-	});
-});
-
-app.post('/api/todos', function(req, res) {
-
-	Todo.create({
-		text: req.body.text,
-		done: false
-	}, function(error, todo) {
-		if (error) {
-			res.send(error);
-		}
-
-		Todo.find(function(error, todos) {
-			if (error) {
-				res.send(errors);
-			}
-			res.json(todos);
-		});
-	});
-
-});
-
-app.delete('/api/todos/:todo_id', function(req, res) {
-	Todo.remove({
-		_id: req.params.todo_id
-	}, function(error, todo) {
-		if (error) {
-			res.send(error);
-		}
-
-		Todo.find(function(error, todos) {
-			if (error) {
-				res.send(error);
-			}
-
-			res.json(todos);
-		});
-	});
 });
