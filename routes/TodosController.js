@@ -1,17 +1,4 @@
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/todolist');
-
-var Todo = mongoose.model('Todo', {
-	text: String,
-	date: {
-		type: Date,
-		default: Date.now
-	},
-	done: {
-		type: Boolean,
-		default: false
-	}
-});
+var Todo = require('../model/TodosModel').TodoModel;
 
 /*
  * GET home page.

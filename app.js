@@ -39,7 +39,6 @@ app.get('/api/todos', todosController.allTodos);
 app.post('/api/todos', todosController.createTodo);
 app.delete('/api/todos/:todo_id', todosController.deleteTodo);
 
-
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
 });
