@@ -39,7 +39,7 @@ http.createServer(app).listen(app.get('port'), function() {
 
 
 app.get('/', function(req, res){
-	res.sendfile('./public/index.html');
+	res.render('index',{});
 });
 
 var Todo = mongoose.model('Todo', {
