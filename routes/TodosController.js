@@ -1,4 +1,4 @@
-var Todo = require('../model/TodosModel').TodoModel;
+var Todo = require('../model/TodosModel');
 
 /*
  * GET home page.
