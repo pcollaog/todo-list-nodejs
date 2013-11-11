@@ -38,9 +38,7 @@ http.createServer(app).listen(app.get('port'), function() {
 });
 
 
-app.get('/', function(req, res){
-	res.render('index',{});
-});
+app.get('/', routes.index);
 
 var Todo = mongoose.model('Todo', {
 	text: String,
