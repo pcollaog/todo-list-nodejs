@@ -6,19 +6,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Todo</title>
 
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-
-	<style>
-	html 					{ overflow-y:scroll; }
-	body 					{ padding-top:50px; }
-	#todo-list 				{ margin-bottom:30px; }
-	</style>
+	<link rel="stylesheet" href="/stylesheets/bootstrap/bootstrap.css"><!-- load bootstrap -->
+	<link rel="stylesheet" href="/stylesheets/style.css">
 
 	<!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
-	<script src="/javascripts/core.js"></script>
-
+	<script type="text/javascript" src="/javascripts/jquery/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="/javascripts/angular/angular.min.js"></script>
+	<script type="text/javascript" src="/javascripts/moments/moment-with-langs.min.js"></script>
+	<script type="text/javascript" src="/javascripts/core.js"></script>
 </head>
 <body ng-controller="mainController" ng-init="initialize()">
 	<div class="container">
@@ -33,7 +28,7 @@
 				<!-- LOOP OVER THE TODOS IN $scope.todos -->
 				<div class="checkbox" ng-repeat="todo in todos">
 					<label>
-						<input type="checkbox" ng-click="deleteTodo(todo._id)">{{todo.date}} {{ todo.text }}
+						<input type="checkbox" ng-click="deleteTodo(todo._id)"><span>{{ todo.date | timeago }}<span> {{ todo.text }}
 					</label>
 				</div>
 

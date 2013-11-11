@@ -1,5 +1,11 @@
 var todo = angular.module('todo', []);
 
+todo.filter('timeago', function(){
+	return function(date){
+		return moment(date).fromNow();
+	}
+});
+
 function mainController($scope, $http) {
 
 	$scope.formData = {};
