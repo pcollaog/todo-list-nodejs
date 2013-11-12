@@ -10,6 +10,18 @@ var todosController = require('./routes/TodosController');
 var http = require('http');
 var path = require('path');
 var app = express();
+var db = require('./config/database');
+
+/*
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+var User = require('./model/UserModel');
+
+passport.use(new LocalStrategy(function(username, password, done) {
+
+}));
+*/
 
 // all environments
 app.set('port', process.env.PORT || 3000);
