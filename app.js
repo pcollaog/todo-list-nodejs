@@ -12,16 +12,35 @@ var path = require('path');
 var app = express();
 var db = require('./config/database');
 
-/*
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('./model/UserModel');
 
 passport.use(new LocalStrategy(function(username, password, done) {
+	User.findOne({
+		username: username
+	}, function(err, user) {
 
+		if (err) {
+			return done(err);
+		}
+
+		if (!user) {
+			return done(null, false, {
+				message: "Username doesn't exist"
+			});
+		}
+
+		if (!user.validPassword(password)) {
+			return done(null, false, {
+				message: "Wrong password"
+			});
+		}
+
+		return done(null, user);
+	});
 }));
-*/
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -45,8 +64,20 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
+app.post('/login', passport.authenticate('local', {
+	successRedirect: "/todos",
+	failureRedirect: "/login"
+}));
 
-app.get('/', indexController.index);
+app.get('/login', function(req, res) {
+	res.render('login', {});
+});
+
+app.get('/', function(req, res) {
+	res.redirect('/login')
+})
+
+app.get('/todos', indexController.index);
 app.get('/api/todos', todosController.allTodos);
 app.post('/api/todos', todosController.createTodo);
 app.delete('/api/todos/:todo_id', todosController.deleteTodo);
