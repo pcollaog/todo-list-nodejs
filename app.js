@@ -12,9 +12,11 @@ var path = require('path');
 var app = express();
 var db = require('./config/database');
 
+
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
+var security = require('./config/security');
 var User = require('./model/UserModel');
 
 app.configure(function() {
@@ -44,57 +46,49 @@ app.configure(function() {
 		app.use(express.errorHandler());
 	}
 
-	passport.use(new LocalStrategy(function(username, password, done) {
-		User.findOne({
-			username: username
-		}, function(err, user) {
-
-			if (err) {
-				return done(err);
-			}
-
-			if (!user) {
-				return done(null, false, {
-					message: "Username doesn't exist"
-				});
-			}
-
-			if (!user.validPassword(password)) {
-				return done(null, false, {
-					message: "Wrong password"
-				});
-			}
-
-			return done(null, user);
-		});
-	}));
-
-	passport.serializeUser(function(user, done) {
-		done(null, user.id);
-	});
-
-	passport.deserializeUser(function(id, done) {
-		User.findOne(id, function(err, user) {
-			done(err, user);
-		});
-	});
-
+	passport.use(new LocalStrategy(User.authenticate()));
+	passport.serializeUser(User.serializeUser());
+	passport.deserializeUser(User.deserializeUser());
 });
-
-app.post('/login', passport.authenticate('local', {
-	successRedirect: "/todos",
-	failureRedirect: "/login"
-}));
 
 app.get('/login', function(req, res) {
 	res.render('login', {});
+});
+
+app.post('/login', passport.authenticate('local'), function(req, res) {
+	res.redirect('/todos');
+});
+
+app.get('/logout', function(req, res) {
+	req.logout();
+	res.redirect('/login');
 });
 
 app.get('/', function(req, res) {
 	res.redirect('/login')
 })
 
+app.get('/register', function(req, res) {
+	res.render('register', {});
+});
+
+app.post('/register', function(req, res) {
+	User.register(new User({
+		username: req.body.username
+	}), req.body.password, function(err, user) {
+		if (err) {
+			return res.render('register', {
+				user: user
+			});
+		}
+
+		res.redirect('/');
+	});
+});
+
+//app.all('/api/*', security.ensureAuthenticated);
 app.get('/todos', indexController.index);
+
 app.get('/api/todos', todosController.allTodos);
 app.post('/api/todos', todosController.createTodo);
 app.delete('/api/todos/:todo_id', todosController.deleteTodo);
