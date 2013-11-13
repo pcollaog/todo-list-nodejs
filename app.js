@@ -6,6 +6,7 @@ var express = require('express');
 
 var indexController = require('./routes/IndexController');
 var todosController = require('./routes/TodosController');
+var registerController = require('./routes/RegisterController');
 
 var http = require('http');
 var path = require('path');
@@ -68,25 +69,9 @@ app.get('/', function(req, res) {
 	res.redirect('/login')
 })
 
-app.get('/register', function(req, res) {
-	res.render('register', {});
-});
+app.get('/register', registerController.index);
+app.post('/register', registerController.registerUser);
 
-app.post('/register', function(req, res) {
-	User.register(new User({
-		username: req.body.username
-	}), req.body.password, function(err, user) {
-		if (err) {
-			return res.render('register', {
-				user: user
-			});
-		}
-
-		res.redirect('/');
-	});
-});
-
-//app.all('/api/*', security.ensureAuthenticated);
 app.get('/todos', indexController.index);
 
 app.get('/api/todos', todosController.allTodos);
