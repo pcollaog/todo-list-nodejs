@@ -1,21 +1,24 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Register User</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Todos Login">
+    <meta name="author" content="pcollaog">
+	<title>Registro de Usuario</title>
+
+	<link rel="stylesheet" href="/stylesheets/bootstrap/bootstrap.css">
+	<link rel="stylesheet" href="/stylesheets/login.css">
 </head>
 <body>
-	<form action="/register" method="post">
-		<div>
-			<label>Username:</label>
-			<input type="text" name="username"/>
-		</div>
-		<div>
-			<label>Password:</label>
-			<input type="password" name="password"/>
-		</div>
-		<div>
-			<input type="submit" value="Log In"/>
-		</div>		
-	</form>
+	<div class="container">
+		<form action="/register" method="post" class="form-signin">
+			<h2 class="form-signin-heading">Registro de Usuario</h2>
+			<input type="text" class="form-control" name="username" placeholder="Username" required autofocus>
+			<input type="password" class="form-control" name="password" placeholder="Password" required>
+
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
+		</form>
+	</div>
 </body>
 </html>
