@@ -17,52 +17,69 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('./model/UserModel');
 
-passport.use(new LocalStrategy(function(username, password, done) {
-	User.findOne({
-		username: username
-	}, function(err, user) {
+app.configure(function() {
+	// all environments
+	app.set('port', process.env.PORT || 3000);
+	app.set('views', path.join(__dirname, 'views'));
+	app.set('view engine', 'ejs');
+	app.use(express.favicon());
+	app.use(express.logger('dev'));
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(express.cookieParser('your secret here'));
 
-		if (err) {
-			return done(err);
-		}
+	// passport initialize
+	app.use(passport.initialize());
+	app.use(passport.session());
 
-		if (!user) {
-			return done(null, false, {
-				message: "Username doesn't exist"
-			});
-		}
+	app.use(app.router);
+	app.use(require('less-middleware')({
+		src: path.join(__dirname, 'public')
+	}));
 
-		if (!user.validPassword(password)) {
-			return done(null, false, {
-				message: "Wrong password"
-			});
-		}
+	app.use(express.static(path.join(__dirname, 'public')));
 
-		return done(null, user);
+	// development only
+	if ('development' == app.get('env')) {
+		app.use(express.errorHandler());
+	}
+
+	passport.use(new LocalStrategy(function(username, password, done) {
+		User.findOne({
+			username: username
+		}, function(err, user) {
+
+			if (err) {
+				return done(err);
+			}
+
+			if (!user) {
+				return done(null, false, {
+					message: "Username doesn't exist"
+				});
+			}
+
+			if (!user.validPassword(password)) {
+				return done(null, false, {
+					message: "Wrong password"
+				});
+			}
+
+			return done(null, user);
+		});
+	}));
+
+	passport.serializeUser(function(user, done) {
+		done(null, user.id);
 	});
-}));
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
-app.use(express.session());
-app.use(app.router);
-app.use(require('less-middleware')({
-	src: path.join(__dirname, 'public')
-}));
+	passport.deserializeUser(function(id, done) {
+		User.findOne(id, function(err, user) {
+			done(err, user);
+		});
+	});
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-// development only
-if ('development' == app.get('env')) {
-	app.use(express.errorHandler());
-}
+});
 
 app.post('/login', passport.authenticate('local', {
 	successRedirect: "/todos",
