@@ -20,45 +20,47 @@ var LocalStrategy = require('passport-local').Strategy;
 var security = require('./config/security');
 var User = require('./model/UserModel');
 
-app.configure(function() {
-	// all environments
-	app.set('port', process.env.PORT || 3000);
-	app.set('views', path.join(__dirname, 'views'));
-	app.set('view engine', 'ejs');
-	app.use(express.favicon());
-	app.use(express.logger('dev'));
-	app.use(express.bodyParser());
-	app.use(express.methodOverride());
-	app.use(express.cookieParser('your secret here'));
+// all environments
+app.set('port', process.env.PORT || 3000);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.cookieParser('your secret here'));
+app.use(express.session());
 
-	// passport initialize
-	app.use(passport.initialize());
-	app.use(passport.session());
+// passport initialize
+app.use(passport.initialize());
+app.use(passport.session());
 
-	app.use(app.router);
-	app.use(require('less-middleware')({
-		src: path.join(__dirname, 'public')
-	}));
+app.use(app.router);
+app.use(require('less-middleware')({
+	src: path.join(__dirname, 'public')
+}));
 
-	app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
-	// development only
-	if ('development' == app.get('env')) {
-		app.use(express.errorHandler());
-	}
+// development only
+if ('development' == app.get('env')) {
+	app.use(express.errorHandler());
+}
 
-	passport.use(new LocalStrategy(User.authenticate()));
-	passport.serializeUser(User.serializeUser());
-	passport.deserializeUser(User.deserializeUser());
-});
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.get('/login', function(req, res) {
 	res.render('login', {});
 });
 
-app.post('/login', passport.authenticate('local'), function(req, res) {
-	res.redirect('/todos');
-});
+app.post('/login', passport.authenticate('local', {
+	successRedirect: '/todos',
+	failureRedirect: '/login',
+	failureFlash: true
+}));
 
 app.get('/logout', function(req, res) {
 	req.logout();
