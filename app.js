@@ -58,8 +58,7 @@ app.get('/login', function(req, res) {
 
 app.post('/login', passport.authenticate('local', {
 	successRedirect: '/todos',
-	failureRedirect: '/login',
-	failureFlash: true
+	failureRedirect: '/login'
 }));
 
 app.get('/logout', function(req, res) {
@@ -74,8 +73,10 @@ app.get('/', function(req, res) {
 app.get('/register', registerController.index);
 app.post('/register', registerController.registerUser);
 
-app.get('/todos', indexController.index);
+app.all('/api/*', security.ensureAuthenticated);
+app.all('/todos', security.ensureAuthenticated);
 
+app.get('/todos', indexController.index);
 app.get('/api/todos', todosController.allTodos);
 app.post('/api/todos', todosController.createTodo);
 app.delete('/api/todos/:todo_id', todosController.deleteTodo);
