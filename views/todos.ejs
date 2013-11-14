@@ -7,15 +7,15 @@
 	<title>Todo</title>
 
 	<link rel="stylesheet" href="/stylesheets/bootstrap/bootstrap.css"><!-- load bootstrap -->
-	<link rel="stylesheet" href="/stylesheets/style.css">
 
-	<!-- SPELLS -->
 	<script type="text/javascript" src="/javascripts/jquery/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="/javascripts/bootstrap/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/javascripts/angular/angular.min.js"></script>
 	<script type="text/javascript" src="/javascripts/moments/moment-with-langs.min.js"></script>
 	<script type="text/javascript" src="/javascripts/core.js"></script>
 </head>
 <body ng-controller="mainController" ng-init="initialize()">
+	<% include navbar/navbar %>
 	<div class="container">
 		<div class="jumbotron text-center">
 			<h1>I'm a Todo-aholic <%=user %><span class="label label-info">{{ todos.length }}</span></h1>
