@@ -9,6 +9,10 @@ var TodoSchema = new mongoose.Schema({
 	done: {
 		type: Boolean,
 		default: false
+	},
+	creator: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User'
 	}
 });
 

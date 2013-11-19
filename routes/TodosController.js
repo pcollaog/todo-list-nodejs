@@ -1,37 +1,44 @@
 var Todo = require('../model/TodosModel');
 
-/*
- * GET home page.
+/**
+ * Find all todos by userId
+ * @param  {Object} req request
+ * @param  {Object} res response
  */
-exports.allTodos = function(req, res) {
+function findAllTodosByUser(req, res) {
+	var userId = req.user.id;
 
-	Todo.find(function(error, todos) {
-		if (error) {
-			res.send(error);
-		}
-
-		res.json(todos);
-	});
+	Todo.find()
+		.where('creator')
+		.equals(userId)
+		.sort('date')
+		.exec(function(err, todos) {
+			if (err) {
+				res.send(err);
+			}
+			res.json(todos);
+		});
 }
 
+
+exports.allTodos = findAllTodosByUser;
+
 exports.createTodo = function(req, res) {
+	var userId = req.user.id;
+	var textTodo = req.body.text;
 
 	Todo.create({
-		text: req.body.text,
-		done: false
+		text: textTodo,
+		done: false,
+		creator: userId
 	}, function(error, todo) {
 		if (error) {
 			res.send(error);
 		}
-
-		Todo.find(function(error, todos) {
-			if (error) {
-				res.send(errors);
-			}
-			res.json(todos);
-		});
+		findAllTodosByUser(req, res);
 	});
 }
+
 
 exports.deleteTodo = function(req, res) {
 	Todo.remove({
@@ -40,13 +47,6 @@ exports.deleteTodo = function(req, res) {
 		if (error) {
 			res.send(error);
 		}
-
-		Todo.find(function(error, todos) {
-			if (error) {
-				res.send(error);
-			}
-
-			res.json(todos);
-		});
+		findAllTodosByUser(req, res);
 	});
 }
