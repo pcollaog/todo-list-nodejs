@@ -15,10 +15,13 @@ exports.allTodos = function(req, res) {
 }
 
 exports.createTodo = function(req, res) {
+	var userId = req.user.id;
+	var textTodo = req.body.text;
 
 	Todo.create({
-		text: req.body.text,
-		done: false
+		text: textTodo,
+		done: false,
+		creator: userId
 	}, function(error, todo) {
 		if (error) {
 			res.send(error);
@@ -31,7 +34,17 @@ exports.createTodo = function(req, res) {
 			res.json(todos);
 		});
 	});
+
+	/*
+	Todo.find(function(error, todos) {
+		if (error) {
+			res.send(errors);
+		}
+		res.json(todos);
+	});
+*/
 }
+
 
 exports.deleteTodo = function(req, res) {
 	Todo.remove({
