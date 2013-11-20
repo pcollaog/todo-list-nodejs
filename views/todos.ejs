@@ -1,0 +1,55 @@
+<!doctype html>
+<html ng-app="todo">
+<head>
+	<meta charset="UTF-8">
+	<!-- Optimize mobile viewport -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Todo</title>
+
+	<link rel="stylesheet" href="/stylesheets/bootstrap/bootstrap.css"><!-- load bootstrap -->
+
+	<script type="text/javascript" src="/javascripts/jquery/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="/javascripts/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/javascripts/angular/angular.min.js"></script>
+	<script type="text/javascript" src="/javascripts/moments/moment-with-langs.min.js"></script>
+	<script type="text/javascript" src="/javascripts/core.js"></script>
+</head>
+<body ng-controller="mainController" ng-init="initialize()">
+	<% include navbar/navbar %>
+	<div class="container">
+		<div class="jumbotron text-center">
+			<h1>I'm a Todo-aholic <span class="label label-info">{{ todos.length }}</span></h1>
+		</div>
+
+		<!-- TODO LIST -->
+		<div id="todo-list" class="row">
+			<div class="col-sm-4 col-sm-offset-4">
+
+				<!-- LOOP OVER THE TODOS IN $scope.todos -->
+				<div class="checkbox" ng-repeat="todo in todos">
+					<label>
+						<input type="checkbox" ng-click="deleteTodo(todo._id)"><span>{{ todo.date | timeago }}<span> {{ todo.text }}
+					</label>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- FORM TO CREATE TODOS -->
+		<div id="todo-form" class="row">
+			<div class="col-sm-8 col-sm-offset-2 text-center">
+				<form>
+					<div class="form-group">
+
+						<!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+						<input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
+					</div>
+
+					<!-- createToDo() WILL CREATE NEW TODOS -->
+					<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

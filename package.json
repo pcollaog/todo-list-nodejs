@@ -1,0 +1,17 @@
+{
+  "name": "todolist",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.4.x",
+    "ejs": "*",
+    "less-middleware": "*",
+    "mongoose": "~3.8.x",
+    "passport": "~0.1.17",
+    "passport-local-mongoose": "~0.2.5",
+    "passport-local": "~0.1.6"
+  }
+}
